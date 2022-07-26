@@ -10,6 +10,12 @@
     margin-bottom: 6px;
 }
 
+.account {
+    margin-bottom: 3px;
+    margin-top: 5px;
+    margin-left: 3px;
+}
+
 .button {
     background-color: white; /* Green */
     border: none;
