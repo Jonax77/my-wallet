@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import Web3 from "web3";
+import detectEthereumProvider from "@metamask/detect-provider";
 
 function App() {
     const [web3Api, setWeb3Api] = useState({
@@ -11,29 +12,17 @@ function App() {
     const [account, setAccount] = useState(null);
 
     const loadProvider = async () => {
-        let provider = null;
+        const provider = await detectEthereumProvider();
 
-        // check available provider
-        if (window.ethereum) {
-            // for newer version of metamask
-            provider = window.ethereum;
-
-            // try to connect to metamask automatically
-            try {
-                await provider.request({ method: "eth_requestAccounts" });
-            } catch {
-                console.error("User denied accounts access!");
-            }
-        } else if (window.web3) {
-            provider = window.web3.currentProvider; // this condition is for legacy version of metamask
-        } else if (!process.env.production) {
-            provider = new Web3.providers.HttpProvider("http://localhost:7545"); // Ganache
+        if (provider) {
+            provider.request({ method: "eth_requestAccounts" });
+            setWeb3Api({
+                web3: new Web3(provider),
+                provider,
+            });
+        } else {
+            console.error("Please install Metamask");
         }
-
-        setWeb3Api({
-            web3: new Web3(provider),
-            provider,
-        });
     };
 
     const getAccount = async () => {
@@ -72,3 +61,22 @@ function App() {
 }
 
 export default App;
+
+// code without detect-provider
+
+// // check available provider
+// if (window.ethereum) {
+//     // for newer version of metamask
+//     provider = window.ethereum;
+
+//     // try to connect to metamask automatically
+//     try {
+//         await provider.request({ method: "eth_requestAccounts" });
+//     } catch {
+//         console.error("User denied accounts access!");
+//     }
+// } else if (window.web3) {
+//     provider = window.web3.currentProvider; // this condition is for legacy version of metamask
+// } else if (!process.env.production) {
+//     provider = new Web3.providers.HttpProvider("http://localhost:7545"); // Ganache
+// }
