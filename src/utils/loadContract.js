@@ -9,5 +9,5 @@ export const loadContract = async (name, provider) => {
 
     const deployedContract = await _contract.deployed();
 
-    return _contract;
+    return deployedContract;
 };

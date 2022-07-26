@@ -12,6 +12,7 @@ function App() {
     });
 
     const [account, setAccount] = useState(null);
+    const [balance, setBalance] = useState(null);
 
     const loadProvider = async () => {
         const provider = await detectEthereumProvider();
@@ -30,7 +31,23 @@ function App() {
 
     const getAccount = async () => {
         const accounts = await web3Api.web3.eth.getAccounts();
+        // set defaultAccount for from feature
+        web3Api.web3.eth.defaultAccount = accounts[0];
         setAccount(accounts[0]);
+    };
+
+    const loadBalance = async () => {
+        const { contract, web3 } = web3Api;
+        let balance = await contract.balanceOf(account);
+        balance = parseFloat(web3.utils.fromWei(balance, "ether"));
+        setBalance(balance.toFixed(2));
+    };
+
+    const addFunds = async () => {
+        const { contract, web3 } = web3Api;
+        const amount = web3.utils.toWei("1", "ether");
+        // need to set the from option, or it will throw an internal error
+        await contract.mint(account, amount, { from: web3.eth.defaultAccount });
     };
 
     useEffect(() => {
@@ -40,6 +57,10 @@ function App() {
     useEffect(() => {
         web3Api.web3 && getAccount(); // only when web3 exists call this function
     }, [web3Api.web3]); // reload when web3 changes
+
+    useEffect(() => {
+        account && loadBalance(); // load only when account is connected
+    }, [account]);
 
     return (
         <>
@@ -66,12 +87,19 @@ function App() {
                             )}
                         </div>
                     </div>
-                    <div className="balance">
-                        Current Balance <strong>10</strong> ETH
-                    </div>
-
-                    <div className="button btn-primary">Create</div>
-                    <div className="button btn-primary">Withdraw</div>
+                    {account && (
+                        <div>
+                            <div className="balance">
+                                Current Balance <strong>{balance}</strong> ETH
+                            </div>
+                            <div
+                                onClick={addFunds}
+                                className="button btn-primary"
+                            >
+                                Donate 1 ETH
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </>
