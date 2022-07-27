@@ -59,23 +59,25 @@ module.exports = {
             network_id: 80001,
             confirmations: 2,
             timeoutBlocks: 200,
-            skipDryRun: true,
+            gas: 5500000,
+            gasPrice: 20000000000,
+            networkCheckTimeout: 1000000,
         },
-        // ropsten: {
-        //     provider: () =>
-        //         new HDWalletProvider({
-        //             mnemonic: {
-        //                 phrase: keys.MNEMONIC,
-        //             },
-        //             providerOrUrl: keys.INFURA_ROPSTEN_URL,
-        //             addressIndex: 0,
-        //         }),
-        //     network_id: 3,
-        //     gas: 5500000,
-        //     gasPrice: 20000000000,
-        //     confirmations: 2,
-        //     timeoutBlocks: 200,
-        // },
+        ropsten: {
+            provider: () =>
+                new HDWalletProvider({
+                    mnemonic: {
+                        phrase: keys.MNEMONIC,
+                    },
+                    providerOrUrl: keys.INFURA_ROPSTEN_URL,
+                    addressIndex: 0,
+                }),
+            network_id: 3,
+            gas: 5500000,
+            gasPrice: 20000000000,
+            confirmations: 2,
+            timeoutBlocks: 200,
+        },
         //
         // An additional network, but with some advanced options…
         // advanced: {
@@ -147,3 +149,8 @@ module.exports = {
     //   }
     // }
 };
+
+// Ropsten deploy info
+// > transaction hash:    0x64540695c12fa9c4d435ab8c7a06b4f248d4388cf55b0bfb6e8aa636b1d6ecc3
+// > Blocks: 3            Seconds: 29
+// > contract address:    0x0349eE4431AA444FF87cb9CDC7Dd0c934a775b34
